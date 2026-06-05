@@ -20,7 +20,7 @@ docker compose up --build
 
 Then open:
 
-- **App (frontend):** http://localhost:8080
+- **App (frontend):** http://localhost:8081
 - **API docs (Swagger):** http://localhost:8000/docs
 
 The database is seeded automatically with realistic equipment and sample tickets on

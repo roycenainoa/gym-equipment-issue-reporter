@@ -21,7 +21,7 @@ services:
         # Browser runs on the host, so it reaches the backend via the published port.
         VITE_API_URL: http://localhost:8000
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - backend
 
