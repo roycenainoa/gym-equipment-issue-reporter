@@ -3,6 +3,9 @@
 A web application that lets gym members report broken or faulty equipment and lets
 facility managers track and resolve those reports. Built for the DLMCSPSE01 portfolio.
 
+**Live demo:** https://gym-reporter-api.onrender.com
+*(Free tier — the first request after idle may take ~50 seconds to wake the server.)*
+
 - **Frontend:** React + Tailwind CSS (Vite)
 - **Backend:** Python + FastAPI
 - **Database:** SQLite (via SQLAlchemy ORM)

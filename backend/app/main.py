@@ -3,8 +3,12 @@
 Exposes the REST endpoints that the React frontend consumes. Each route maps to a
 functional requirement (FR-xx) defined in the project documentation.
 """
+import os
+
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -91,3 +95,27 @@ def update_ticket_status(
     db.commit()
     db.refresh(ticket)
     return ticket
+
+
+# --- Serve the built frontend (single-service deployment) ---
+# In the combined Docker image the React build is copied to /app/static. When
+# that directory exists we serve the SPA from the same origin as the API; in
+# local development (no static dir) the API runs standalone and the frontend is
+# served separately by the Vite dev server.
+_STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "static")
+if os.path.isdir(_STATIC_DIR):
+    app.mount(
+        "/assets",
+        StaticFiles(directory=os.path.join(_STATIC_DIR, "assets")),
+        name="assets",
+    )
+
+    @app.get("/", include_in_schema=False)
+    def serve_index() -> FileResponse:
+        return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def serve_spa(full_path: str) -> FileResponse:
+        # Client-side routing fallback: serve the SPA entry point for any path
+        # not matched by an API route above.
+        return FileResponse(os.path.join(_STATIC_DIR, "index.html"))
